@@ -1,31 +1,15 @@
 package com.dicoding.habitapp.setting
 
-import android.Manifest
-import android.os.Build
 import android.os.Bundle
-import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
 import com.dicoding.habitapp.R
+import com.dicoding.habitapp.utils.DarkMode
+import java.util.*
 
 class SettingsActivity : AppCompatActivity() {
-
-    private val requestPermissionLauncher =
-        registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { isGranted: Boolean ->
-            if (isGranted) {
-                showToast("Notifications permission granted")
-            } else {
-                showToast("Notifications will not show without permission")
-            }
-        }
-
-    private fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,10 +21,6 @@ class SettingsActivity : AppCompatActivity() {
                 .commit()
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        if (Build.VERSION.SDK_INT > 32) {
-            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-        }
     }
 
     class SettingsFragment : PreferenceFragmentCompat() {
@@ -48,6 +28,12 @@ class SettingsActivity : AppCompatActivity() {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
 
             //TODO 11 : Update theme based on value in ListPreference
+            val updateTheme = findPreference<ListPreference>(getString(R.string.pref_key_dark))
+            updateTheme?.setOnPreferenceChangeListener { _, newTheme ->
+                val changeTheme = DarkMode.valueOf(newTheme.toString().toUpperCase(Locale.US))
+                updateTheme(changeTheme.value)
+                true
+            }
         }
 
         private fun updateTheme(mode: Int): Boolean {

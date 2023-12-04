@@ -36,11 +36,11 @@
     <string name="notify_channel_name">Habit Reminder</string>
     <string name="notify_content">Time Up!</string>
 
-    <!-- Sort -->
+    <!-- Filter -->
     <string name="action_sort">sort</string>
-    <string name="sort_start_time">By Start Time</string>
-    <string name="sort_minutes_focus">By Minutes Focus</string>
-    <string name="sort_title_name">By Title Name</string>
+    <string name="filter_start_time">By Start Time</string>
+    <string name="filter_minutes_focus">By Minutes Focus</string>
+    <string name="filter_title_name">By Title Name</string>
 
     <!-- Priority Level-->
     <string name="high">High</string>

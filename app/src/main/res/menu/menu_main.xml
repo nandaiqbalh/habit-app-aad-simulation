@@ -12,10 +12,10 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_sort"
+        android:id="@+id/action_filter"
         android:orderInCategory="101"
         android:title="@string/action_sort"
-        android:icon="@drawable/ic_sort_list"
+        android:icon="@drawable/ic_filter_list"
         app:showAsAction="ifRoom" />
 
     <item

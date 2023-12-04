@@ -2,10 +2,13 @@ package com.dicoding.habitapp.data
 
 import android.content.Context
 import androidx.lifecycle.LiveData
+import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.dicoding.habitapp.utils.HabitSortType
+import com.dicoding.habitapp.utils.SortUtils
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import java.util.concurrent.Callable
 
 class HabitRepository(private val habitDao: HabitDao, private val executor: ExecutorService) {
 
@@ -30,16 +33,27 @@ class HabitRepository(private val habitDao: HabitDao, private val executor: Exec
     }
 
     //TODO 4 : Use SortUtils.getSortedQuery to create sortable query and build paged list
-    fun getHabits(sortType: HabitSortType): LiveData<PagedList<Habit>> {
+    fun getHabits(filter: HabitSortType): LiveData<PagedList<Habit>> {
+        val sortQ = SortUtils.getSorteredQuery(filter)
+        val config = PagedList.Config.Builder()
+            .setEnablePlaceholders(true)
+            .setInitialLoadSizeHint(30)
+            .setPageSize(30)
+            .build()
+        return LivePagedListBuilder(habitDao.getHabits(sortQ), config).build()
         throw NotImplementedError("Not yet implemented")
     }
 
     //TODO 5 : Complete other function inside repository
     fun getHabitById(habitId: Int): LiveData<Habit> {
+        return habitDao.getHabitById(habitId)
         throw NotImplementedError("Not yet implemented")
     }
 
-    fun insertHabit(newHabit: Habit) {
+    fun insertHabit(newHabit: Habit): Long {
+        val habitData = Callable { habitDao.insertHabit(newHabit) }
+        val executor = executor.submit(habitData)
+        return executor.get()
         throw NotImplementedError("Not yet implemented")
     }
 
@@ -50,6 +64,7 @@ class HabitRepository(private val habitDao: HabitDao, private val executor: Exec
     }
 
     fun getRandomHabitByPriorityLevel(level: String): LiveData<Habit> {
+        return habitDao.getRandomHabitByPriorityLevel(level)
         throw NotImplementedError("Not yet implemented")
     }
 }

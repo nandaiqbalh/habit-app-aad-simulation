@@ -13,9 +13,9 @@ import com.dicoding.habitapp.utils.HabitSortType
 
 class HabitListViewModel(private val habitRepository: HabitRepository) : ViewModel() {
 
-    private val _sort = MutableLiveData<HabitSortType>()
+    private val _filter = MutableLiveData<HabitSortType>()
 
-    val habits: LiveData<PagedList<Habit>> = _sort.switchMap {
+    val habits: LiveData<PagedList<Habit>> = _filter.switchMap {
         habitRepository.getHabits(it)
     }
 
@@ -26,11 +26,11 @@ class HabitListViewModel(private val habitRepository: HabitRepository) : ViewMod
     val undo: LiveData<Event<Habit>> = _undo
 
     init {
-        _sort.value = HabitSortType.START_TIME
+        _filter.value = HabitSortType.START_TIME
     }
 
-    fun sort(sortType: HabitSortType) {
-        _sort.value = sortType
+    fun filter(filterType: HabitSortType) {
+        _filter.value = filterType
     }
 
     fun deleteHabit(habit: Habit) {
