@@ -39,7 +39,7 @@ class NotificationWorker(val ctx: Context, params: WorkerParameters) : Worker(ct
             putExtra(HABIT_ID, id)
         }
         val pendingIntent = TaskStackBuilder.create(context).run { addNextIntentWithParentStack(intent)
-            getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+            getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE)
         }
 
         val notificationManagerCompat =
