@@ -26,16 +26,23 @@ class SettingsActivity : AppCompatActivity() {
     class SettingsFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
-
             //TODO 11 : Update theme based on value in ListPreference
-            val updateTheme = findPreference<ListPreference>(getString(R.string.pref_key_dark))
-            updateTheme?.setOnPreferenceChangeListener { _, newTheme ->
-                val changeTheme = DarkMode.valueOf(newTheme.toString().toUpperCase(Locale.US))
-                updateTheme(changeTheme.value)
-                true
+            val themePreference = findPreference<ListPreference>(getString(R.string.pref_key_dark))
+            val darkModeValues = resources.getStringArray(R.array.dark_mode_value)
+            themePreference?.setOnPreferenceChangeListener { preference, newValue ->
+                if (newValue == darkModeValues[0]){
+                    updateTheme(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                }
+                else if (newValue == darkModeValues[1]){
+                    updateTheme(AppCompatDelegate.MODE_NIGHT_YES)
+                }
+                else{
+                    updateTheme(AppCompatDelegate.MODE_NIGHT_NO)
+                }
             }
-        }
 
+
+        }
         private fun updateTheme(mode: Int): Boolean {
             AppCompatDelegate.setDefaultNightMode(mode)
             requireActivity().recreate()

@@ -8,12 +8,13 @@ import com.dicoding.habitapp.utils.HabitSortType
 import com.dicoding.habitapp.utils.SortUtils
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import java.util.concurrent.Callable
 
 class HabitRepository(private val habitDao: HabitDao, private val executor: ExecutorService) {
 
     companion object {
 
+        const val PAGE_SIZE = 30
+        const val PLACEHOLDERS = true
         @Volatile
         private var instance: HabitRepository? = null
 
@@ -34,37 +35,24 @@ class HabitRepository(private val habitDao: HabitDao, private val executor: Exec
 
     //TODO 4 : Use SortUtils.getSortedQuery to create sortable query and build paged list
     fun getHabits(filter: HabitSortType): LiveData<PagedList<Habit>> {
-        val sortQ = SortUtils.getSorteredQuery(filter)
+        val query = SortUtils.getSorteredQuery(filter)
         val config = PagedList.Config.Builder()
-            .setEnablePlaceholders(true)
-            .setInitialLoadSizeHint(30)
-            .setPageSize(30)
+            .setEnablePlaceholders(PLACEHOLDERS)
+            .setPageSize(PAGE_SIZE)
             .build()
-        return LivePagedListBuilder(habitDao.getHabits(sortQ), config).build()
-        throw NotImplementedError("Not yet implemented")
+        return LivePagedListBuilder(habitDao.getHabits(query), config).build()
     }
 
     //TODO 5 : Complete other function inside repository
-    fun getHabitById(habitId: Int): LiveData<Habit> {
-        return habitDao.getHabitById(habitId)
-        throw NotImplementedError("Not yet implemented")
-    }
+    fun getHabitById(habitId: Int): LiveData<Habit> {return habitDao.getHabitById(habitId)}
 
-    fun insertHabit(newHabit: Habit): Long {
-        val habitData = Callable { habitDao.insertHabit(newHabit) }
-        val executor = executor.submit(habitData)
-        return executor.get()
-        throw NotImplementedError("Not yet implemented")
-    }
-
-    fun deleteHabit(habit: Habit) {
-        executor.execute {
-            habitDao.deleteHabit(habit)
+    fun insertHabit(newHabit: Habit) {
+        executor.execute{
+            habitDao.insertHabit(newHabit)
         }
     }
 
-    fun getRandomHabitByPriorityLevel(level: String): LiveData<Habit> {
-        return habitDao.getRandomHabitByPriorityLevel(level)
-        throw NotImplementedError("Not yet implemented")
-    }
+    fun deleteHabit(habit: Habit) { executor.execute { habitDao.deleteHabit(habit)} }
+
+    fun getRandomHabitByPriorityLevel(level: String): LiveData<Habit> { return habitDao.getRandomHabitByPriorityLevel(level)}
 }

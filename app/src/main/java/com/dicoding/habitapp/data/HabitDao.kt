@@ -12,18 +12,15 @@ interface HabitDao {
     @RawQuery(observedEntities = [Habit::class])
     fun getHabits(query: SupportSQLiteQuery): DataSource.Factory<Int, Habit>
 
-    @Query("Select * from habits where id = :habitId")
+    @Query("select * from habits where id = :habitId")
     fun getHabitById(habitId: Int): LiveData<Habit>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     fun insertHabit(habit: Habit): Long
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     fun insertAll(vararg habits: Habit)
-
     @Delete
     fun deleteHabit(habits: Habit)
-
-    @Query("Select * from habits where priorityLevel = :level")
+    @Query("select * from habits where priorityLevel = :level order by random() limit 1")
     fun getRandomHabitByPriorityLevel(level: String): LiveData<Habit>
 }

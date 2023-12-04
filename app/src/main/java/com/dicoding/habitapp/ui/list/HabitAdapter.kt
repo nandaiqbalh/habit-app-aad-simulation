@@ -17,15 +17,16 @@ class HabitAdapter(
 
     //TODO 8 : Create and initialize ViewHolder
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HabitViewHolder {
-        val view: View = LayoutInflater.from(parent.context).inflate(R.layout.habit_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.habit_item, parent, false)
         return HabitViewHolder(view)
-        throw NotImplementedError("Not yet implemented")
     }
 
     override fun onBindViewHolder(holder: HabitViewHolder, position: Int) {
         //TODO 9 : Get data and bind them to ViewHolder
-        val item = getItem(position) as Habit
-        holder.bind(item)
+        val habit: Habit? = getItem(position)
+        if(habit!=null){
+            holder.bind(habit)
+        }
     }
 
     inner class HabitViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -41,16 +42,14 @@ class HabitAdapter(
             tvTitle.text = habit.title
             tvStartTime.text = habit.startTime
             tvMinutes.text = habit.minutesFocus.toString()
-            itemView.setOnClickListener {
+           if(getHabit.priorityLevel == "High"){
+               ivPriority.setImageResource(R.drawable.ic_priority_high)
+           }else if (getHabit.priorityLevel == "Low"){
+               ivPriority.setImageResource(R.drawable.ic_priority_medium)
+           }else ivPriority.setImageResource(R.drawable.ic_priority_low)
+        itemView.setOnClickListener {
                 onClick(habit)
             }
-            val colorPriority = when (habit.priorityLevel.toLowerCase()) {
-                "high" -> R.drawable.ic_priority_high
-                "medium" -> R.drawable.ic_priority_medium
-                "low" -> R.drawable.ic_priority_low
-                else -> R.drawable.ic_priority_low
-            }
-            ivPriority.setImageResource(colorPriority)
         }
 
     }

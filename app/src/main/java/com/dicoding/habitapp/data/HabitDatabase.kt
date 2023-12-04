@@ -6,6 +6,9 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.dicoding.habitapp.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -15,7 +18,7 @@ import java.io.InputStreamReader
 import java.util.concurrent.Executors
 
 //TODO 3 : Define room database class and prepopulate database using JSON
-@Database(entities = [Habit::class], version = 1, exportSchema = false)
+@Database(entities = [Habit::class], version = 1)
 abstract class HabitDatabase : RoomDatabase() {
 
     abstract fun habitDao(): HabitDao
@@ -27,25 +30,17 @@ abstract class HabitDatabase : RoomDatabase() {
 
         fun getInstance(context: Context): HabitDatabase {
             return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    HabitDatabase::class.java,
-                    "habit.db"
-                )
-                    .addCallback(object : RoomDatabase.Callback() {
+                val instance = Room.databaseBuilder(context.applicationContext, HabitDatabase::class.java, "habits.db")
+                    .addCallback(object : Callback() {
                         override fun onCreate(db: SupportSQLiteDatabase) {
                             super.onCreate(db)
-                            Executors.newSingleThreadScheduledExecutor().execute {
-                                fillWithStartingData(context, getInstance(context).habitDao())
-                            }
+                            Executors.newSingleThreadScheduledExecutor().execute { fillWithStartingData(context.applicationContext, getInstance(context).habitDao()) }
                         }
                     })
                     .build()
                 INSTANCE = instance
                 instance
-
             }
-            throw NotImplementedError("Not yet implemented")
         }
 
         private fun fillWithStartingData(context: Context, dao: HabitDao) {

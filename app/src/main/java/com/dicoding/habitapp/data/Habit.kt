@@ -8,27 +8,26 @@ import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
 //TODO 1 : Define a local database table using the schema in app/schema/habits.json
-@Entity(tableName = "habits")
 @Parcelize
+@Entity(tableName ="habits")
 data class Habit(
     @PrimaryKey(autoGenerate = true)
-    @NonNull
     @ColumnInfo(name = "id")
     val id: Int = 0,
 
-    @NonNull
     @ColumnInfo(name = "title")
+    @NonNull
     val title: String,
 
-    @NonNull
     @ColumnInfo(name = "minutesFocus")
+    @NonNull
     val minutesFocus: Long,
 
-    @NonNull
     @ColumnInfo(name = "startTime")
+    @NonNull
     val startTime: String,
 
-    @NonNull
     @ColumnInfo(name = "priorityLevel")
+    @NonNull
     val priorityLevel: String
 ): Parcelable

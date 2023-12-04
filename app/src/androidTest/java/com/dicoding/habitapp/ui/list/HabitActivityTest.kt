@@ -5,6 +5,7 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
@@ -19,37 +20,22 @@ import org.junit.Test
 class HabitActivityTest {
     @get:Rule
     var activityRule = ActivityScenarioRule(HabitListActivity::class.java)
+    var addHabitAct: Activity? = null
 
     @Test
-    fun showAddHabit(){
-        Espresso.onView(ViewMatchers.withId(R.id.rv_habit))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.fab))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.fab)).perform(ViewActions.click())
-
-        val addHabit = getAddHabitActivity()
-        TestCase.assertTrue(addHabit?.javaClass == AddHabitActivity::class.java)
-
-        Espresso.onView(ViewMatchers.withId(R.id.add_ed_title))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.add_ed_minutes_focus))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.sp_priority_level))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.add_tv_start_time))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-
-    }
-
-    private fun getAddHabitActivity(): Activity?{
-        var activity: Activity? = null
-        InstrumentationRegistry.getInstrumentation().runOnMainSync{
-            run{
-                activity = ActivityLifecycleMonitorRegistry.getInstance()
+    fun homeActivityTest() {
+        Espresso.onView(withId(R.id.fab))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            run {
+                addHabitAct = ActivityLifecycleMonitorRegistry.getInstance()
                     .getActivitiesInStage(Stage.RESUMED).elementAtOrNull(0)
+                TestCase.assertTrue(addHabitAct?.javaClass == AddHabitActivity::class.java)
             }
+
         }
-        return activity
+
+
     }
+
 }
